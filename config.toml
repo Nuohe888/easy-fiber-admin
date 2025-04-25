@@ -1,0 +1,11 @@
+[server]
+port = 18888
+
+[sql]
+user = "root"
+pass = "root"
+host = "127.0.0.1"
+dbName = "cloud_sale"
+port = 3306
+maxIdleConns = 10
+maxOpenConns = 100
