@@ -1,5 +1,5 @@
 package server
 
-type Cfg struct {
+type Config struct {
 	Port int `toml:"port"`
 }

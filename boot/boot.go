@@ -12,5 +12,6 @@ func Boot() {
 	system.Router(server.Get().Group("/api/admin"))
 
 	//运行Server
-	server.Start()
+	go server.Start()
+	server.Stop()
 }

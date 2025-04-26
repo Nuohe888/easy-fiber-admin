@@ -8,9 +8,11 @@ import (
 )
 
 var db *gorm.DB
+var cfg *Config
 
-func Init(user, pass, host, dbName string, port, maxIdleConns, maxOpenConns int) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, pass, host, port, dbName)
+func Init(c *Config) {
+	cfg = c
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", cfg.User, cfg.Pass, cfg.Host, cfg.Port, cfg.DbName)
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:               dsn,
 		DefaultStringSize: 256,
@@ -24,8 +26,8 @@ func Init(user, pass, host, dbName string, port, maxIdleConns, maxOpenConns int)
 	if err != nil {
 		panic(fmt.Sprintf("数据库获取失败: %s", err))
 	}
-	s.SetMaxIdleConns(maxIdleConns)
-	s.SetMaxOpenConns(maxOpenConns)
+	s.SetMaxIdleConns(cfg.MaxIdleConns)
+	s.SetMaxOpenConns(cfg.MaxOpenConns)
 }
 
 func Get() *gorm.DB {

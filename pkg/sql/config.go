@@ -1,6 +1,6 @@
 package sql
 
-type Cfg struct {
+type Config struct {
 	User         string `toml:"user"`
 	Pass         string `toml:"pass"`
 	Host         string `toml:"host"`

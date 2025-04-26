@@ -9,3 +9,14 @@ dbName = "cloud_sale"
 port = 3306
 maxIdleConns = 10
 maxOpenConns = 100
+
+[log]
+directory = "log"
+enableConsoleOut= true
+enableFileOut = false
+enableMixedSave = true
+enableStacktrace = false
+level = "info"
+maxAge = 0
+maxSize = 1024
+stacktraceLevel = "fatal"
