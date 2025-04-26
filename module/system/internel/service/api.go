@@ -1,19 +1,22 @@
 package service
 
 import (
+	"go-server/pkg/logger"
 	"go-server/pkg/sql"
 	"gorm.io/gorm"
 )
 
 type ApiSrv struct {
-	db *gorm.DB
+	db  *gorm.DB
+	log logger.ILog
 }
 
 var apiSrv *ApiSrv
 
 func InitApiSrv() {
 	apiSrv = &ApiSrv{
-		db: sql.Get(),
+		db:  sql.Get(),
+		log: logger.Get(),
 	}
 }
 

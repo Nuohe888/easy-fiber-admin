@@ -13,7 +13,7 @@ var app *fiber.App
 var port int
 
 func Init(_port int) {
-	app = fiber.New()
+	app = newFiber()
 	port = _port
 }
 
