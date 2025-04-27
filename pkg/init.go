@@ -13,7 +13,7 @@ func Init() {
 
 	logger.Init(&cfg.Log)
 
-	server.Init(cfg.Server.Port)
-
 	sql.Init(&cfg.Sql)
+
+	server.Init(cfg.Server.Port)
 }
