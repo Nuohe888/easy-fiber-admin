@@ -11,9 +11,10 @@ var db *gorm.DB
 var cfg *Config
 
 func Init(c *Config) {
+	var err error
 	cfg = c
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", cfg.User, cfg.Pass, cfg.Host, cfg.Port, cfg.DbName)
-	db, err := gorm.Open(mysql.New(mysql.Config{
+	db, err = gorm.Open(mysql.New(mysql.Config{
 		DSN:               dsn,
 		DefaultStringSize: 256,
 	}), &gorm.Config{

@@ -1,4 +1,4 @@
-package server
+package system
 
 import (
 	"gorm.io/gorm"

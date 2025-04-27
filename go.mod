@@ -10,6 +10,7 @@ require (
 	github.com/go-sql-driver/mysql v1.9.2 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/gofiber/fiber/v2 v2.52.6 // indirect
+	github.com/golang-jwt/jwt/v5 v5.2.2 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/huashusu/rotate v0.0.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect

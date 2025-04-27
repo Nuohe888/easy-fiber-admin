@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"go-server/module/system/internel/service"
+	"go-server/module/system/internal/service"
 )
 
 type apiCtl struct {
