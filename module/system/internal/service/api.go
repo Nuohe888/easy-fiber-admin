@@ -1,8 +1,8 @@
 package service
 
 import (
-	"go-server/pkg/logger"
-	"go-server/pkg/sql"
+	"easy-fiber-admin/pkg/logger"
+	"easy-fiber-admin/pkg/sql"
 	"gorm.io/gorm"
 )
 

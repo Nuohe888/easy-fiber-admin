@@ -1,6 +1,6 @@
 package main
 
-import "go-server/boot"
+import "easy-fiber-admin/boot"
 
 func main() {
 	// 启动

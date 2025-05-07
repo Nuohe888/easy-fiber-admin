@@ -1,6 +1,6 @@
 package boot
 
-import "go-server/pkg"
+import "easy-fiber-admin/pkg"
 
 func initBoot() {
 	pkg.Init()

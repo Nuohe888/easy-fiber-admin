@@ -1,9 +1,9 @@
 package utils
 
 import (
+	"easy-fiber-admin/module/system/internal/vo"
 	"errors"
 	"github.com/gofiber/fiber/v2"
-	"go-server/module/system/internal/vo"
 	"strings"
 )
 

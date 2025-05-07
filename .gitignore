@@ -1,5 +1,4 @@
-go-server
-.idea
+easy-fiber-admin
 .DS_Store
 config.toml
 /pkg/generator/

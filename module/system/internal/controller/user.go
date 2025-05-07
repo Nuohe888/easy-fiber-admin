@@ -1,12 +1,12 @@
 package controller
 
 import (
+	"easy-fiber-admin/model/system"
+	"easy-fiber-admin/module/system/internal/service"
+	"easy-fiber-admin/module/system/internal/utils"
+	"easy-fiber-admin/module/system/internal/vo"
 	"errors"
 	"github.com/gofiber/fiber/v2"
-	"go-server/model/system"
-	"go-server/module/system/internal/service"
-	"go-server/module/system/internal/utils"
-	"go-server/module/system/internal/vo"
 	"strconv"
 )
 

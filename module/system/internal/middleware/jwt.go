@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"context"
+	"easy-fiber-admin/module/system/internal/utils"
+	"easy-fiber-admin/module/system/internal/vo"
+	"easy-fiber-admin/pkg/jwt"
 	"github.com/gofiber/fiber/v2"
-	"go-server/module/system/internal/utils"
-	"go-server/module/system/internal/vo"
-	"go-server/pkg/jwt"
 )
 
 func JWT() fiber.Handler {

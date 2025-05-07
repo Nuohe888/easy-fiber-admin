@@ -1,6 +1,6 @@
 package module
 
-import "go-server/module/system"
+import "easy-fiber-admin/module/system"
 
 func Init() {
 	system.Init()

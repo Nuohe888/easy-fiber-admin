@@ -1,8 +1,8 @@
 package model
 
 import (
-	"go-server/model/system"
-	"go-server/pkg/sql"
+	"easy-fiber-admin/model/system"
+	"easy-fiber-admin/pkg/sql"
 )
 
 func Init() {

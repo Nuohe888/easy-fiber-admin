@@ -1,9 +1,9 @@
 package system
 
 import (
+	"easy-fiber-admin/module/system/internal/controller"
+	"easy-fiber-admin/module/system/internal/middleware"
 	"github.com/gofiber/fiber/v2"
-	"go-server/module/system/internal/controller"
-	"go-server/module/system/internal/middleware"
 )
 
 func Router(r fiber.Router) {

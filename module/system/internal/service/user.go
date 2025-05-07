@@ -1,13 +1,13 @@
 package service
 
 import (
+	"easy-fiber-admin/model/system"
+	"easy-fiber-admin/module/system/internal/utils"
+	"easy-fiber-admin/module/system/internal/vo"
+	"easy-fiber-admin/pkg/jwt"
+	"easy-fiber-admin/pkg/logger"
+	"easy-fiber-admin/pkg/sql"
 	"errors"
-	"go-server/model/system"
-	"go-server/module/system/internal/utils"
-	"go-server/module/system/internal/vo"
-	"go-server/pkg/jwt"
-	"go-server/pkg/logger"
-	"go-server/pkg/sql"
 	"gorm.io/gorm"
 	"time"
 )

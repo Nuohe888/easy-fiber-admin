@@ -1,4 +1,4 @@
-module go-server
+module easy-fiber-admin
 
 go 1.23.0
 

@@ -1,10 +1,10 @@
 package middleware
 
 import (
+	"easy-fiber-admin/module/system/internal/pkg/casbin"
+	"easy-fiber-admin/module/system/internal/utils"
+	"easy-fiber-admin/module/system/internal/vo"
 	"github.com/gofiber/fiber/v2"
-	"go-server/module/system/internal/pkg/casbin"
-	"go-server/module/system/internal/utils"
-	"go-server/module/system/internal/vo"
 )
 
 func Casbin() fiber.Handler {

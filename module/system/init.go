@@ -1,10 +1,10 @@
 package system
 
 import (
-	"go-server/module/system/internal/controller"
-	"go-server/module/system/internal/pkg/casbin"
-	"go-server/module/system/internal/service"
-	"go-server/pkg/sql"
+	"easy-fiber-admin/module/system/internal/controller"
+	"easy-fiber-admin/module/system/internal/pkg/casbin"
+	"easy-fiber-admin/module/system/internal/service"
+	"easy-fiber-admin/pkg/sql"
 )
 
 func Init() {

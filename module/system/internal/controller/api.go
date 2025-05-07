@@ -1,9 +1,9 @@
 package controller
 
 import (
+	"easy-fiber-admin/module/system/internal/service"
+	"easy-fiber-admin/module/system/internal/vo"
 	"github.com/gofiber/fiber/v2"
-	"go-server/module/system/internal/service"
-	"go-server/module/system/internal/vo"
 )
 
 type apiCtl struct {

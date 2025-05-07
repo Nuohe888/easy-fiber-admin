@@ -1,10 +1,10 @@
 package pkg
 
 import (
-	"go-server/pkg/config"
-	"go-server/pkg/logger"
-	"go-server/pkg/server"
-	"go-server/pkg/sql"
+	"easy-fiber-admin/pkg/config"
+	"easy-fiber-admin/pkg/logger"
+	"easy-fiber-admin/pkg/server"
+	"easy-fiber-admin/pkg/sql"
 )
 
 func Init() {

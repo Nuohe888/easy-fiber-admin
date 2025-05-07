@@ -1,10 +1,10 @@
 package boot
 
 import (
-	"go-server/model"
-	"go-server/module"
-	"go-server/module/system"
-	"go-server/pkg/server"
+	"easy-fiber-admin/model"
+	"easy-fiber-admin/module"
+	"easy-fiber-admin/module/system"
+	"easy-fiber-admin/pkg/server"
 )
 
 func Boot() {
