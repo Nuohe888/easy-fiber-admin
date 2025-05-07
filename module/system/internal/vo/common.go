@@ -50,3 +50,8 @@ func BodyParser(body any, c *fiber.Ctx) error {
 	}
 	return nil
 }
+
+type List struct {
+	Items any   `json:"items"`
+	Total int64 `json:"total"`
+}

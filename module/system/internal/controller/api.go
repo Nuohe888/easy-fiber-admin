@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gofiber/fiber/v2"
 	"go-server/module/system/internal/service"
+	"go-server/module/system/internal/vo"
 )
 
 type apiCtl struct {
@@ -23,4 +24,20 @@ func (i *apiCtl) Ping(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"code": "400", "msg": err.Error()})
 	}
 	return c.JSON(fiber.Map{"code": "200"})
+}
+
+func (i *apiCtl) Dict(c *fiber.Ctx) error {
+	return vo.ResultOK(c.JSON([]any{
+		map[string]interface{}{
+			"label": "禁用",
+			"value": 0,
+			"color": "warning",
+		},
+		map[string]interface{}{
+			"label": "启用",
+			"value": 1,
+			"color": "purple",
+		},
+	}), c)
+
 }

@@ -1,0 +1,81 @@
+package service
+
+import (
+	"errors"
+	"go-server/model/system"
+	"go-server/module/system/internal/utils"
+	"go-server/module/system/internal/vo"
+	"go-server/pkg/logger"
+	"go-server/pkg/sql"
+	"gorm.io/gorm"
+)
+
+type RoleSrv struct {
+	db  *gorm.DB
+	log logger.ILog
+}
+
+var roleSrv *RoleSrv
+
+func InitRoleSrv() {
+	roleSrv = &RoleSrv{
+		db:  sql.Get(),
+		log: logger.Get(),
+	}
+}
+
+func GetRoleSrv() *RoleSrv {
+	if roleSrv == nil {
+		panic("service role init failed")
+	}
+	return roleSrv
+}
+
+func (i *RoleSrv) Add(role *system.Role) error {
+	return i.db.Create(&role).Error
+}
+
+func (i *RoleSrv) Del(id string) error {
+	return i.db.Where("id = ?", id).Delete(&system.Role{}).Error
+}
+
+func (i *RoleSrv) Put(idStr string, role *system.Role) error {
+	var _role system.Role
+	i.db.Where("id = ?", idStr).Find(&_role)
+	if _role.Id == 0 {
+		return errors.New("不存在该Id")
+	}
+	originalStatus := role.Status
+
+	utils.MergeStructs(&_role, role)
+
+	_role.Status = originalStatus
+	return i.db.Save(&_role).Error
+}
+
+func (i *RoleSrv) Get(id string) system.Role {
+	var role system.Role
+	i.db.Where("id = ?", id).Find(&role)
+	return role
+}
+
+func (i *RoleSrv) List(page, pageSize int) *vo.List {
+	var items []system.Role
+	var total int64
+	if pageSize == 0 {
+		pageSize = 20
+	}
+	db := i.db
+	i.db.Limit(pageSize).Offset((page - 1) * pageSize).Find(&items)
+	db.Model(&system.Role{}).Count(&total)
+	return &vo.List{
+		Items: items,
+		Total: total,
+	}
+}
+
+func (i *RoleSrv) ListAll() []system.Role {
+	var items []system.Role
+	i.db.Find(&items)
+	return items
+}

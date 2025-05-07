@@ -2,3 +2,4 @@ go-server
 .idea
 .DS_Store
 config.toml
+/pkg/generator/

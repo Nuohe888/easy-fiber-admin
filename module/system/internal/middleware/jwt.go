@@ -8,7 +8,7 @@ import (
 	"go-server/pkg/jwt"
 )
 
-func UserJwt() fiber.Handler {
+func JWT() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		token, err := utils.GetUserToken(c)
 		if err != nil {

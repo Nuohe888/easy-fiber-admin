@@ -6,9 +6,10 @@ import (
 
 type UserInfoJwtClaims struct {
 	Id             uint      `json:"id"`
+	RoleCode       string    `json:"roleCode"`
 	Username       string    `json:"username"`
-	IssuedAt       time.Time `json:"issued_at"`
-	ExpirationTime time.Time `json:"expiration_time"`
+	IssuedAt       time.Time `json:"issuedAt"`
+	ExpirationTime time.Time `json:"expirationTime"`
 }
 
 func (a *UserInfoJwtClaims) GetSubject() string           { return a.Username }

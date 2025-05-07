@@ -1,10 +1,13 @@
 package controller
 
 import (
+	"errors"
 	"github.com/gofiber/fiber/v2"
+	"go-server/model/system"
 	"go-server/module/system/internal/service"
 	"go-server/module/system/internal/utils"
 	"go-server/module/system/internal/vo"
+	"strconv"
 )
 
 type userCtl struct {
@@ -33,24 +36,67 @@ func (i *userCtl) Login(c *fiber.Ctx) error {
 
 func (i *userCtl) Info(c *fiber.Ctx) error {
 	info := utils.GetUserInfo(c)
-	var res vo.InfoRes
-	var roles []string
-	roles = append(roles, "admin")
-	res.RealName = "管理员"
-	res.Id = info.Id
-	res.Username = info.Username
-	res.Roles = roles
-	return vo.ResultOK(info, c)
+	res, err := i.srv.Info(info.Id)
+	if err != nil {
+		return vo.ResultErr(err, c)
+	}
+	return vo.ResultOK(res, c)
+}
+
+func (i *userCtl) Refresh(c *fiber.Ctx) error {
+	return vo.ResultErr(errors.New("token已过期,请重新登录"), c)
 }
 
 func (i *userCtl) Codes(c *fiber.Ctx) error {
 	var res []string
-	res = append(res, "admin0")
-	res = append(res, "admin1")
-	res = append(res, "admin2")
+	res = append(res, utils.GetUserInfo(c).RoleCode)
 	return vo.ResultOK(res, c)
 }
 
 func (i *userCtl) Logout(c *fiber.Ctx) error {
 	return vo.ResultOK(nil, c)
+}
+
+func (i *userCtl) Add(c *fiber.Ctx) error {
+	var req system.User
+	if err := vo.BodyParser(&req, c); err != nil {
+		return err
+	}
+	if err := i.srv.Add(&req); err != nil {
+		return vo.ResultErr(err, c)
+	}
+	return vo.ResultOK(nil, c)
+}
+
+func (i *userCtl) Del(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if err := i.srv.Del(id); err != nil {
+		return vo.ResultErr(err, c)
+	}
+	return vo.ResultOK(nil, c)
+}
+
+func (i *userCtl) Put(c *fiber.Ctx) error {
+	id := c.Params("id")
+	var req system.User
+	if err := vo.BodyParser(&req, c); err != nil {
+		return err
+	}
+	if err := i.srv.Put(id, &req); err != nil {
+		return vo.ResultErr(err, c)
+	}
+	return vo.ResultOK(nil, c)
+}
+
+func (i *userCtl) Get(c *fiber.Ctx) error {
+	id := c.Query("id")
+	return vo.ResultOK(i.srv.Get(id), c)
+}
+
+func (i *userCtl) List(c *fiber.Ctx) error {
+	page := c.Query("page")
+	limit := c.Query("limit")
+	pageInt, _ := strconv.Atoi(page)
+	limitInt, _ := strconv.Atoi(limit)
+	return vo.ResultOK(i.srv.List(pageInt, limitInt), c)
 }

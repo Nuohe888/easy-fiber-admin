@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"go-server/model/system"
+	"go-server/module/system/internal/utils"
 	"go-server/module/system/internal/vo"
 	"go-server/pkg/jwt"
 	"go-server/pkg/logger"
@@ -50,8 +51,11 @@ func (i *UserSrv) Login(req *vo.LoginReq) (*vo.LoginRes, error) {
 		return nil, errors.New("密码错误")
 	}
 
+	var role system.Role
+	i.db.Where("id = ?", user.RoleId).Find(&role)
+
 	var roles []string
-	roles = append(roles, "admin")
+	roles = append(roles, role.Code)
 
 	// 生成token
 	now := time.Now()
@@ -60,6 +64,7 @@ func (i *UserSrv) Login(req *vo.LoginReq) (*vo.LoginRes, error) {
 	claims := &vo.UserInfoJwtClaims{
 		Id:             user.Id,
 		Username:       user.Username,
+		RoleCode:       role.Code,
 		IssuedAt:       now,
 		ExpirationTime: expTime,
 	}
@@ -75,4 +80,61 @@ func (i *UserSrv) Login(req *vo.LoginReq) (*vo.LoginRes, error) {
 		Username:    user.Username,
 		AccessToken: accessToken,
 	}, nil
+}
+
+func (i *UserSrv) Info(id uint) (*vo.InfoRes, error) {
+	var user system.User
+	i.db.Where("id=?", id).Find(&user)
+	if user.Username == "" {
+		return nil, errors.New("该用户不存在")
+	}
+	var role system.Role
+	i.db.Where("id=?", user.RoleId).Find(&role)
+	return &vo.InfoRes{
+		Id:       id,
+		RealName: user.Username,
+		Roles:    []string{role.Code},
+		Username: user.Username,
+	}, nil
+}
+
+func (i *UserSrv) Add(user *system.User) error {
+	return i.db.Create(&user).Error
+}
+
+func (i *UserSrv) Del(id string) error {
+	return i.db.Where("id = ?", id).Delete(&system.User{}).Error
+}
+
+func (i *UserSrv) Put(id string, user *system.User) error {
+	var _user system.User
+	i.db.Where("id=?", id).Find(&_user).Find(&_user)
+	if _user.Id == 0 {
+		return errors.New("不存在该Id")
+	}
+	originalStatus := user.Status
+	utils.MergeStructs(&_user, user)
+	_user.Status = originalStatus
+	return i.db.Save(&_user).Error
+}
+
+func (i *UserSrv) Get(id string) system.User {
+	var user system.User
+	i.db.Where("id = ?", id).Find(&user)
+	return user
+}
+
+func (i *UserSrv) List(page, limit int) *vo.List {
+	var items []system.User
+	var total int64
+	if limit == 0 {
+		limit = 20
+	}
+	db := i.db
+	i.db.Limit(limit).Offset((page - 1) * limit).Find(&items)
+	db.Model(&system.User{}).Count(&total)
+	return &vo.List{
+		Items: items,
+		Total: total,
+	}
 }
