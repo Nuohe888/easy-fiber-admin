@@ -36,13 +36,13 @@ func (i *DictTypeSrv) Add(dictType *system.DictType) error {
 	return i.db.Create(&dictType).Error
 }
 
-func (i *DictTypeSrv) Del(id string) error {
+func (i *DictTypeSrv) Del(id any) error {
 	return i.db.Where("id = ?", id).Delete(&system.DictType{}).Error
 }
 
-func (i *DictTypeSrv) Put(idStr string, dictType *system.DictType) error {
+func (i *DictTypeSrv) Put(id any, dictType *system.DictType) error {
 	var _dictType system.DictType
-	i.db.Where("id = ?", idStr).Find(&_dictType)
+	i.db.Where("id = ?", id).Find(&_dictType)
 	if *_dictType.Id == 0 {
 		return errors.New("不存在该Id")
 	}
@@ -52,7 +52,7 @@ func (i *DictTypeSrv) Put(idStr string, dictType *system.DictType) error {
 	return i.db.Save(&_dictType).Error
 }
 
-func (i *DictTypeSrv) Get(id string) system.DictType {
+func (i *DictTypeSrv) Get(id any) system.DictType {
 	var dictType system.DictType
 	i.db.Where("id = ?", id).Find(&dictType)
 	return dictType

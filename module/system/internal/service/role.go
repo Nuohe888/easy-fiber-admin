@@ -35,11 +35,11 @@ func (i *RoleSrv) Add(role *system.Role) error {
 	return i.db.Create(&role).Error
 }
 
-func (i *RoleSrv) Del(id string) error {
+func (i *RoleSrv) Del(id any) error {
 	return i.db.Where("id = ?", id).Delete(&system.Role{}).Error
 }
 
-func (i *RoleSrv) Put(idStr string, role *system.Role) error {
+func (i *RoleSrv) Put(idStr any, role *system.Role) error {
 	var _role system.Role
 	i.db.Where("id = ?", idStr).Find(&_role)
 	if *_role.Id == 0 {
@@ -51,7 +51,7 @@ func (i *RoleSrv) Put(idStr string, role *system.Role) error {
 	return i.db.Save(&_role).Error
 }
 
-func (i *RoleSrv) Get(id string) system.Role {
+func (i *RoleSrv) Get(id any) system.Role {
 	var role system.Role
 	i.db.Where("id = ?", id).Find(&role)
 	return role

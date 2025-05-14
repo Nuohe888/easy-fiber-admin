@@ -35,13 +35,13 @@ func (i *DictDataSrv) Add(dictData *system.DictData) error {
 	return i.db.Create(&dictData).Error
 }
 
-func (i *DictDataSrv) Del(id string) error {
+func (i *DictDataSrv) Del(id any) error {
 	return i.db.Where("id = ?", id).Delete(&system.DictData{}).Error
 }
 
-func (i *DictDataSrv) Put(idStr string, dictData *system.DictData) error {
+func (i *DictDataSrv) Put(id any, dictData *system.DictData) error {
 	var _data system.DictData
-	i.db.Where("id = ?", idStr).Find(&_data)
+	i.db.Where("id = ?", id).Find(&_data)
 	if *_data.Id == 0 {
 		return errors.New("不存在该Id")
 	}
@@ -49,7 +49,7 @@ func (i *DictDataSrv) Put(idStr string, dictData *system.DictData) error {
 	return i.db.Save(&_data).Error
 }
 
-func (i *DictDataSrv) Get(id string) system.DictData {
+func (i *DictDataSrv) Get(id any) system.DictData {
 	var dictData system.DictData
 	i.db.Where("id = ?", id).Find(&dictData)
 	return dictData

@@ -102,11 +102,11 @@ func (i *UserSrv) Add(user *system.User) error {
 	return i.db.Create(&user).Error
 }
 
-func (i *UserSrv) Del(id string) error {
+func (i *UserSrv) Del(id any) error {
 	return i.db.Where("id = ?", id).Delete(&system.User{}).Error
 }
 
-func (i *UserSrv) Put(id string, user *system.User) error {
+func (i *UserSrv) Put(id any, user *system.User) error {
 	var _user system.User
 	i.db.Where("id=?", id).Find(&_user).Find(&_user)
 	if *_user.Id == 0 {
@@ -116,7 +116,7 @@ func (i *UserSrv) Put(id string, user *system.User) error {
 	return i.db.Save(&_user).Error
 }
 
-func (i *UserSrv) Get(id string) system.User {
+func (i *UserSrv) Get(id any) system.User {
 	var user system.User
 	i.db.Where("id = ?", id).Find(&user)
 	return user
