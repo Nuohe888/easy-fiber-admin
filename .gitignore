@@ -2,3 +2,4 @@ easy-fiber-admin
 .DS_Store
 config.toml
 /pkg/generator/
+/module/sys

@@ -2,9 +2,9 @@ package system
 
 type DictType struct {
 	Model
-	Name string `json:"name"`
-	Type string `json:"type"`
-	Desc string `json:"desc"`
+	Name *string `json:"name"`
+	Type *string `json:"type"`
+	Desc *string `json:"desc"`
 }
 
 func (DictType) TableName() string {

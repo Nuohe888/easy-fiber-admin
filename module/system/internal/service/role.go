@@ -42,14 +42,12 @@ func (i *RoleSrv) Del(id string) error {
 func (i *RoleSrv) Put(idStr string, role *system.Role) error {
 	var _role system.Role
 	i.db.Where("id = ?", idStr).Find(&_role)
-	if _role.Id == 0 {
+	if *_role.Id == 0 {
 		return errors.New("不存在该Id")
 	}
-	originalStatus := role.Status
 
 	utils.MergeStructs(&_role, role)
 
-	_role.Status = originalStatus
 	return i.db.Save(&_role).Error
 }
 

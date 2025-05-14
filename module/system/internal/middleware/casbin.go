@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"easy-fiber-admin/module/system/internal/pkg/casbin"
 	"easy-fiber-admin/module/system/internal/utils"
 	"easy-fiber-admin/module/system/internal/vo"
+	"easy-fiber-admin/pkg/casbin"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -12,7 +12,7 @@ func Casbin() fiber.Handler {
 		info := utils.GetUserInfo(c)
 		obj := c.Path()
 		act := c.Method()
-		enforcer := casbin.Get()
+		enforcer := casbin.GetAdmin()
 		ok, err := enforcer.Enforce(info.RoleCode, obj, act)
 		if err != nil || !ok {
 			return c.Status(200).JSON(vo.Response{
