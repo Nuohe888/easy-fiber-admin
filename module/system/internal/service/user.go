@@ -43,11 +43,11 @@ func (i *UserSrv) Login(req *vo.LoginReq) (*vo.LoginRes, error) {
 		return nil, errors.New("账号或密码错误")
 	}
 
-	if *user.Username == "" {
+	if user.Username == nil || *user.Username == "" {
 		return nil, errors.New("账号或密码错误")
 	}
 
-	if req.Password != *user.Password {
+	if user.Password == nil || req.Password != *user.Password {
 		return nil, errors.New("密码错误")
 	}
 
@@ -85,7 +85,7 @@ func (i *UserSrv) Login(req *vo.LoginReq) (*vo.LoginRes, error) {
 func (i *UserSrv) Info(id uint) (*vo.InfoRes, error) {
 	var user system.User
 	i.db.Where("id=?", id).Find(&user)
-	if *user.Username == "" {
+	if user.Username == nil || *user.Username == "" {
 		return nil, errors.New("该用户不存在")
 	}
 	var role system.Role
@@ -109,7 +109,7 @@ func (i *UserSrv) Del(id any) error {
 func (i *UserSrv) Put(id any, user *system.User) error {
 	var _user system.User
 	i.db.Where("id=?", id).Find(&_user).Find(&_user)
-	if *_user.Id == 0 {
+	if _user.Id == nil || *_user.Id == 0 {
 		return errors.New("不存在该Id")
 	}
 	utils.MergeStructs(&_user, user)

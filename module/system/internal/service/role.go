@@ -42,7 +42,7 @@ func (i *RoleSrv) Del(id any) error {
 func (i *RoleSrv) Put(idStr any, role *system.Role) error {
 	var _role system.Role
 	i.db.Where("id = ?", idStr).Find(&_role)
-	if *_role.Id == 0 {
+	if _role.Id == nil || *_role.Id == 0 {
 		return errors.New("不存在该Id")
 	}
 

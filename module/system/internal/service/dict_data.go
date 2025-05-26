@@ -42,7 +42,7 @@ func (i *DictDataSrv) Del(id any) error {
 func (i *DictDataSrv) Put(id any, dictData *system.DictData) error {
 	var _data system.DictData
 	i.db.Where("id = ?", id).Find(&_data)
-	if *_data.Id == 0 {
+	if _data.Id == nil || *_data.Id == 0 {
 		return errors.New("不存在该Id")
 	}
 	utils.MergeStructs(&_data, dictData)

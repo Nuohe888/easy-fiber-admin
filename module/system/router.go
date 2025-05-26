@@ -7,8 +7,6 @@ import (
 )
 
 func Router(r fiber.Router) {
-	r.Get("ping", controller.ApiCtl.Ping)
-
 	r.Post("/auth/login", controller.UserCtl.Login)
 	r.Post("/auth/refresh", controller.UserCtl.Refresh)
 

@@ -3,3 +3,5 @@ easy-fiber-admin
 config.toml
 /pkg/generator/
 /module/sys
+/module/example
+/model/example

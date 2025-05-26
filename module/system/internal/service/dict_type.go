@@ -43,7 +43,7 @@ func (i *DictTypeSrv) Del(id any) error {
 func (i *DictTypeSrv) Put(id any, dictType *system.DictType) error {
 	var _dictType system.DictType
 	i.db.Where("id = ?", id).Find(&_dictType)
-	if *_dictType.Id == 0 {
+	if _dictType.Id == nil || *_dictType.Id == 0 {
 		return errors.New("不存在该Id")
 	}
 
@@ -86,7 +86,9 @@ func (i *DictTypeSrv) Dict() []vo.Dict {
 		var item vo.Dict
 		item.Type = *v.Type
 		for _, v2 := range datas {
-			item.List = append(item.List, v2)
+			if *v2.Pid == *v.Id {
+				item.List = append(item.List, v2)
+			}
 		}
 		list = append(list, item)
 	}

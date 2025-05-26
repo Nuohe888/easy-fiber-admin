@@ -3,6 +3,7 @@ package boot
 import (
 	"easy-fiber-admin/model"
 	"easy-fiber-admin/module"
+	"easy-fiber-admin/module/example"
 	"easy-fiber-admin/module/system"
 	"easy-fiber-admin/pkg/server"
 )
@@ -19,6 +20,7 @@ func Boot() {
 
 	//注册后台路由
 	system.Router(server.Get().Group("/api/admin"))
+	example.Router(server.Get().Group("/api/admin/example"))
 
 	//运行Server
 	go server.Start()
