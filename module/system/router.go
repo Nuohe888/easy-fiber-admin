@@ -10,6 +10,9 @@ func Router(r fiber.Router) {
 	r.Post("/auth/login", controller.UserCtl.Login)
 	r.Post("/auth/refresh", controller.UserCtl.Refresh)
 
+	r.Post("/update", controller.ApiCtl.UpdateFile)
+	r.Post("/delFile", controller.ApiCtl.DelFile)
+
 	auth := r.Group("")
 	auth.Use(middleware.JWT()).
 		Use(middleware.Casbin())

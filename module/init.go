@@ -1,11 +1,9 @@
 package module
 
 import (
-	"easy-fiber-admin/module/example"
 	"easy-fiber-admin/module/system"
 )
 
 func Init() {
 	system.Init()
-	example.Init()
 }

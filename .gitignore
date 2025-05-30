@@ -5,3 +5,4 @@ config.toml
 /module/sys
 /module/example
 /model/example
+/update/
