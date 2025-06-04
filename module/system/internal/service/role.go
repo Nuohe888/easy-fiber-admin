@@ -2,8 +2,8 @@ package service
 
 import (
 	"easy-fiber-admin/model/system"
-	"easy-fiber-admin/module/system/internal/utils"
-	"easy-fiber-admin/module/system/internal/vo"
+	"easy-fiber-admin/pkg/common/utils"
+	"easy-fiber-admin/pkg/common/vo"
 	"easy-fiber-admin/pkg/logger"
 	"easy-fiber-admin/pkg/sql"
 	"errors"
@@ -76,4 +76,11 @@ func (i *RoleSrv) ListAll() []system.Role {
 	var items []system.Role
 	i.db.Find(&items)
 	return items
+}
+
+func (i *RoleSrv) GetStatus() map[string]interface{} {
+	return map[string]interface{}{
+		"0": "禁用",
+		"1": "启用",
+	}
 }

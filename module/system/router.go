@@ -2,29 +2,30 @@ package system
 
 import (
 	"easy-fiber-admin/module/system/internal/controller"
-	"easy-fiber-admin/module/system/internal/middleware"
+	middleware2 "easy-fiber-admin/pkg/common/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 
 func Router(r fiber.Router) {
-	r.Post("/auth/login", controller.UserCtl.Login)
-	r.Post("/auth/refresh", controller.UserCtl.Refresh)
+	r.Post("auth/login", controller.UserCtl.Login)
+	r.Post("auth/refresh", controller.UserCtl.Refresh)
 
-	r.Post("/update", controller.ApiCtl.UpdateFile)
-	r.Post("/delFile", controller.ApiCtl.DelFile)
+	r.Post("update", controller.ApiCtl.UpdateFile)
+	r.Post("delFile", controller.ApiCtl.DelFile)
 
 	auth := r.Group("")
-	auth.Use(middleware.JWT()).
-		Use(middleware.Casbin())
-	auth.Get("/auth/codes", controller.UserCtl.Codes)
-	auth.Post("/auth/logout", controller.UserCtl.Logout)
-	auth.Get("/user/info", controller.UserCtl.Info)
+	auth.Use(middleware2.JWT()).
+		Use(middleware2.Casbin())
+	auth.Get("auth/codes", controller.UserCtl.Codes)
+	auth.Post("auth/logout", controller.UserCtl.Logout)
+	auth.Get("user/info", controller.UserCtl.Info)
 
 	auth.Put("user/:id", controller.UserCtl.Put)
 	auth.Post("user", controller.UserCtl.Add)
 	auth.Delete("user/:id", controller.UserCtl.Del)
 	auth.Get("user", controller.UserCtl.Get)
 	auth.Get("user/list", controller.UserCtl.List)
+	auth.Get("user/status", controller.UserCtl.GetStatus)
 
 	auth.Put("role/:id", controller.RoleCtl.Put)
 	auth.Post("role", controller.RoleCtl.Add)
@@ -32,18 +33,12 @@ func Router(r fiber.Router) {
 	auth.Get("role", controller.RoleCtl.Get)
 	auth.Get("role/list", controller.RoleCtl.List)
 	auth.Get("role/list/all", controller.RoleCtl.ListAll)
+	auth.Get("role/status", controller.RoleCtl.GetStatus)
 
-	auth.Get("dict", controller.DictTypeCtl.Dict)
-
-	auth.Post("dictType", controller.DictTypeCtl.Add)
-	auth.Delete("dictType/:id", controller.DictTypeCtl.Del)
-	auth.Put("dictType/:id", controller.DictTypeCtl.Put)
-	auth.Get("dictType", controller.DictTypeCtl.Get)
-	auth.Get("dictType/list", controller.DictTypeCtl.List)
-
-	auth.Post("dictData", controller.DictDataCtl.Add)
-	auth.Delete("dictData/:id", controller.DictDataCtl.Del)
-	auth.Put("dictData/:id", controller.DictDataCtl.Put)
-	auth.Get("dictData", controller.DictDataCtl.Get)
-	auth.Get("dictData/list", controller.DictDataCtl.List)
+	auth.Put("user_center/:id", controller.UserCenterCtl.Put)
+	auth.Post("user_center", controller.UserCenterCtl.Add)
+	auth.Delete("user_center/:id", controller.UserCenterCtl.Del)
+	auth.Get("user_center", controller.UserCenterCtl.Get)
+	auth.Get("user_center/list", controller.UserCenterCtl.List)
+	auth.Get("user_center/status", controller.UserCenterCtl.GetStatus)
 }

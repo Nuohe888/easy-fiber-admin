@@ -2,8 +2,8 @@ package service
 
 import (
 	"easy-fiber-admin/model/system"
-	"easy-fiber-admin/module/system/internal/utils"
-	"easy-fiber-admin/module/system/internal/vo"
+	"easy-fiber-admin/pkg/common/utils"
+	vo2 "easy-fiber-admin/pkg/common/vo"
 	"easy-fiber-admin/pkg/jwt"
 	"easy-fiber-admin/pkg/logger"
 	"easy-fiber-admin/pkg/sql"
@@ -37,7 +37,7 @@ func (i *UserSrv) Ping() error {
 	return nil
 }
 
-func (i *UserSrv) Login(req *vo.LoginReq) (*vo.LoginRes, error) {
+func (i *UserSrv) Login(req *vo2.LoginReq) (*vo2.LoginRes, error) {
 	var user system.User
 	if err := i.db.Where("username =?", req.Username).Find(&user).Error; err != nil {
 		return nil, errors.New("账号或密码错误")
@@ -61,7 +61,7 @@ func (i *UserSrv) Login(req *vo.LoginReq) (*vo.LoginRes, error) {
 	now := time.Now()
 	expTime, _ := jwt.GetAccessExpTime(now)
 
-	claims := &vo.UserInfoJwtClaims{
+	claims := &vo2.UserInfoJwtClaims{
 		Id:             *user.Id,
 		Username:       *user.Username,
 		RoleCode:       *role.Code,
@@ -74,7 +74,7 @@ func (i *UserSrv) Login(req *vo.LoginReq) (*vo.LoginRes, error) {
 		return nil, errors.New("系统错误")
 	}
 
-	return &vo.LoginRes{
+	return &vo2.LoginRes{
 		RealName:    "管理员",
 		Roles:       roles,
 		Username:    *user.Username,
@@ -82,7 +82,7 @@ func (i *UserSrv) Login(req *vo.LoginReq) (*vo.LoginRes, error) {
 	}, nil
 }
 
-func (i *UserSrv) Info(id uint) (*vo.InfoRes, error) {
+func (i *UserSrv) Info(id uint) (*vo2.InfoRes, error) {
 	var user system.User
 	i.db.Where("id=?", id).Find(&user)
 	if user.Username == nil || *user.Username == "" {
@@ -90,7 +90,7 @@ func (i *UserSrv) Info(id uint) (*vo.InfoRes, error) {
 	}
 	var role system.Role
 	i.db.Where("id=?", user.RoleId).Find(&role)
-	return &vo.InfoRes{
+	return &vo2.InfoRes{
 		Id:       id,
 		RealName: *user.Username,
 		Roles:    []string{*role.Code},
@@ -122,7 +122,7 @@ func (i *UserSrv) Get(id any) system.User {
 	return user
 }
 
-func (i *UserSrv) List(page, limit int) *vo.List {
+func (i *UserSrv) List(page, limit int) *vo2.List {
 	var items []system.User
 	var total int64
 	if limit == 0 {
@@ -131,8 +131,15 @@ func (i *UserSrv) List(page, limit int) *vo.List {
 	db := i.db
 	i.db.Limit(limit).Offset((page - 1) * limit).Find(&items)
 	db.Model(&system.User{}).Count(&total)
-	return &vo.List{
+	return &vo2.List{
 		Items: items,
 		Total: total,
+	}
+}
+
+func (i *UserSrv) GetStatus() map[string]interface{} {
+	return map[string]interface{}{
+		"0": "禁用",
+		"1": "启用",
 	}
 }

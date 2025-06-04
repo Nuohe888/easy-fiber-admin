@@ -3,7 +3,7 @@ package controller
 import (
 	"easy-fiber-admin/model/system"
 	"easy-fiber-admin/module/system/internal/service"
-	"easy-fiber-admin/module/system/internal/vo"
+	"easy-fiber-admin/pkg/common/vo"
 	"github.com/gofiber/fiber/v2"
 	"strconv"
 )
@@ -66,4 +66,8 @@ func (i *roleCtl) List(c *fiber.Ctx) error {
 
 func (i *roleCtl) ListAll(c *fiber.Ctx) error {
 	return vo.ResultOK(i.srv.ListAll(), c)
+}
+
+func (i *roleCtl) GetStatus(c *fiber.Ctx) error {
+	return vo.ResultOK(i.srv.GetStatus(), c)
 }

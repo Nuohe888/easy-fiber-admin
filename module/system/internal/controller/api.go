@@ -2,7 +2,7 @@ package controller
 
 import (
 	"easy-fiber-admin/module/system/internal/service"
-	"easy-fiber-admin/module/system/internal/vo"
+	"easy-fiber-admin/pkg/common/vo"
 	"errors"
 	"strings"
 

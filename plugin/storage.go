@@ -31,8 +31,8 @@ var factoryMutex sync.RWMutex
 var globalStorage IStorage
 var storageMutex sync.RWMutex
 
-// RegisterStorage 注册存储实现
-func RegisterStorage(storageType string, factory StorageFactory) {
+// registerStorage 注册存储实现
+func registerStorage(storageType string, factory StorageFactory) {
 	factoryMutex.Lock()
 	defer factoryMutex.Unlock()
 

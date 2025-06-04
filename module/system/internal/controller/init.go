@@ -4,6 +4,5 @@ func Init() {
 	InitApiCtl()
 	InitUserCtl()
 	InitRoleCtl()
-	InitDictTypeCtl()
-	InitDictDataCtl()
+	InitUserCenterCtl()
 }

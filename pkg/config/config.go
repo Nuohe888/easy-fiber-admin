@@ -9,9 +9,13 @@ import (
 var filepath = "./config.toml"
 
 func Init() {
-	data, err := os.ReadFile(filepath)
+	InitWithPath(filepath)
+}
+
+func InitWithPath(path string) {
+	data, err := os.ReadFile(path)
 	if err != nil {
-		panic(fmt.Sprintf("读取配置文件失败,路径(%s)", filepath))
+		panic(fmt.Sprintf("读取配置文件失败,路径(%s)", path))
 	}
 
 	err = toml.Unmarshal(data, &cfg)
