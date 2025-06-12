@@ -59,13 +59,23 @@ func (i *userCenterCtl) Get(c *fiber.Ctx) error {
 func (i *userCenterCtl) List(c *fiber.Ctx) error {
 	page := c.Query("page")
 	limit := c.Query("limit")
+	username := c.Query("username")
+	nickname := c.Query("nickname")
+	phone := c.Query("phone")
+	email := c.Query("email")
+	status := c.Query("status")
+
 	pageInt, _ := strconv.Atoi(page)
 	limitInt, _ := strconv.Atoi(limit)
-	return vo.ResultOK(i.srv.List(pageInt, limitInt), c)
-}
 
-func (i *userCenterCtl) ListAll(c *fiber.Ctx) error {
-	return vo.ResultOK(i.srv.ListAll(), c)
+	var statusInt *int
+	if status != "" {
+		if s, err := strconv.Atoi(status); err == nil {
+			statusInt = &s
+		}
+	}
+
+	return vo.ResultOK(i.srv.List(pageInt, limitInt, username, nickname, phone, email, statusInt), c)
 }
 
 func (i *userCenterCtl) GetStatus(c *fiber.Ctx) error {

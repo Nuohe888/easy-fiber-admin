@@ -1,5 +1,7 @@
 package system
 
+import "gorm.io/gorm"
+
 type UserCenter struct {
 	Model
 	Username *string `json:"username"`
@@ -14,6 +16,16 @@ type UserCenter struct {
 	Status   *int    `json:"status"`
 }
 
-func (UserCenter) TableName() string {
+func (*UserCenter) TableName() string {
 	return "sys_user_center"
+}
+
+func (i *UserCenter) BeforeCreate(tx *gorm.DB) (err error) {
+	setDefault(&i.Avatar, "")
+	setDefault(&i.Phone, "")
+	setDefault(&i.Email, "")
+	setDefault(&i.RealName, "")
+	setDefault(&i.IdCard, "")
+
+	return nil
 }

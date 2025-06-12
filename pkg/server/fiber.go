@@ -28,5 +28,6 @@ func newFiber() *fiber.App {
 		Output:        os.Stdout,
 		DisableColors: true,
 	}))
+	app.Static("/upload", "./upload")
 	return app
 }

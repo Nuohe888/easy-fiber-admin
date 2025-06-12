@@ -11,3 +11,9 @@ type Model struct {
 	UpdatedAt *time.Time     `json:"updatedAt"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
+
+func setDefault[T any](ptr **T, defaultValue T) {
+	if *ptr == nil {
+		*ptr = &defaultValue
+	}
+}

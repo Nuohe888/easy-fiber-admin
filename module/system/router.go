@@ -7,18 +7,20 @@ import (
 )
 
 func Router(r fiber.Router) {
-	r.Post("auth/login", controller.UserCtl.Login)
-	r.Post("auth/refresh", controller.UserCtl.Refresh)
+	r.Post("login", controller.UserCtl.Login)
+	r.Post("refresh", controller.UserCtl.Refresh)
 
-	r.Post("update", controller.ApiCtl.UpdateFile)
-	r.Post("delFile", controller.ApiCtl.DelFile)
+	//r.Post("update", controller.ApiCtl.UpdateFile)
+	//r.Post("delFile", controller.ApiCtl.DelFile)
 
-	auth := r.Group("")
+	auth := r.Group("auth")
 	auth.Use(middleware2.JWT()).
 		Use(middleware2.Casbin())
-	auth.Get("auth/codes", controller.UserCtl.Codes)
-	auth.Post("auth/logout", controller.UserCtl.Logout)
-	auth.Get("user/info", controller.UserCtl.Info)
+
+	auth.Post("/file/upload/img", controller.ApiCtl.FileUploadImg)
+	auth.Post("logout", controller.UserCtl.Logout)
+	auth.Get("userInfo", controller.UserCtl.Info)
+	auth.Post("editPassword", controller.UserCtl.EditPassword)
 
 	auth.Put("user/:id", controller.UserCtl.Put)
 	auth.Post("user", controller.UserCtl.Add)

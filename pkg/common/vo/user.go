@@ -4,21 +4,23 @@ package vo
 type LoginReq struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
-	Captcha  bool   `json:"captcha"`
 }
 
 // LoginRes 登录接口返回
 type LoginRes struct {
-	RealName    string   `json:"realName"`
-	Roles       []string `json:"roles"`
-	Username    string   `json:"username"`
-	AccessToken string   `json:"accessToken"`
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
 }
 
 // InfoRes 用户信息接口返回
 type InfoRes struct {
-	Id       uint     `json:"id"`
-	RealName string   `json:"realName"`
-	Roles    []string `json:"roles"`
-	Username string   `json:"username"`
+	Id       uint   `json:"userId"`
+	Avatar   string `json:"avatar"`
+	Username string `json:"userName"`
+	Nickname string `json:"nickName"`
+}
+
+type EditPasswordReq struct {
+	OldPassword string `json:"oldPassword"`
+	NewPassword string `json:"newPassword"`
 }

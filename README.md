@@ -6,7 +6,7 @@ EasyFiberAdmin 是一个基于 Go 语言开发的后端管理系统框架，使�
 
 ## 项目前端
 
-- **前端项目**: [Web](https://github.com/Nuohe888/vben) - 基于Vben开发下载文件直接复制到Vben项目即可使用
+- **前端项目**: [Web](https://github.com/Nuohe888/geeker-admin) - 基于geeker-admin二次开发开发
 
 ## 技术栈
 
@@ -62,6 +62,8 @@ easy-fiber-admin/
 ```toml
 [server]
 port = 18888
+domain = "http://127.0.0.1:18888"
+storage = "local"
 
 [sql]
 user = "root"

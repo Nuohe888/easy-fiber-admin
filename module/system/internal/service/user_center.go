@@ -55,25 +55,43 @@ func (i *UserCenterSrv) Get(id any) system.UserCenter {
 	return userCenter
 }
 
-func (i *UserCenterSrv) List(page, limit int) *vo.List {
+func (i *UserCenterSrv) List(page, limit int, username, nickname, phone, email string, status *int) *vo.List {
 	var items []system.UserCenter
 	var total int64
 	if limit == 0 {
 		limit = 20
 	}
-	db := i.db
-	i.db.Limit(limit).Offset((page - 1) * limit).Find(&items)
-	db.Model(&system.UserCenter{}).Count(&total)
+
+	// 构建查询条件
+	query := i.db.Model(&system.UserCenter{})
+
+	// 添加查询条件
+	if username != "" {
+		query = query.Where("username LIKE ?", "%"+username+"%")
+	}
+	if nickname != "" {
+		query = query.Where("nickname LIKE ?", "%"+nickname+"%")
+	}
+	if phone != "" {
+		query = query.Where("phone LIKE ?", "%"+phone+"%")
+	}
+	if email != "" {
+		query = query.Where("email LIKE ?", "%"+email+"%")
+	}
+	if status != nil {
+		query = query.Where("status = ?", *status)
+	}
+
+	// 执行查询
+	query.Limit(limit).Offset((page - 1) * limit).Find(&items)
+
+	// 统计总数
+	query.Count(&total)
+
 	return &vo.List{
 		Items: items,
 		Total: total,
 	}
-}
-
-func (i *UserCenterSrv) ListAll() []system.UserCenter {
-	var items []system.UserCenter
-	i.db.Find(&items)
-	return items
 }
 
 func (i *UserCenterSrv) GetStatus() map[string]interface{} {

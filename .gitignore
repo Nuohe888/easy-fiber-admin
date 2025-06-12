@@ -6,3 +6,7 @@ config.toml
 /module/example
 /model/example
 /update/
+/upload/
+/tests/upload/
+/tests/
+/module/system/test_helper.go

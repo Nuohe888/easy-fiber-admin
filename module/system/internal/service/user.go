@@ -3,26 +3,29 @@ package service
 import (
 	"easy-fiber-admin/model/system"
 	"easy-fiber-admin/pkg/common/utils"
-	vo2 "easy-fiber-admin/pkg/common/vo"
+	"easy-fiber-admin/pkg/common/vo"
 	"easy-fiber-admin/pkg/jwt"
 	"easy-fiber-admin/pkg/logger"
 	"easy-fiber-admin/pkg/sql"
+	"easy-fiber-admin/plugin"
 	"errors"
 	"gorm.io/gorm"
 	"time"
 )
 
 type UserSrv struct {
-	db  *gorm.DB
-	log logger.ILog
+	db     *gorm.DB
+	log    logger.ILog
+	crypto plugin.ICrypto
 }
 
 var userSrv *UserSrv
 
 func InitUserSrv() {
 	userSrv = &UserSrv{
-		db:  sql.Get(),
-		log: logger.Get(),
+		db:     sql.Get(),
+		log:    logger.Get(),
+		crypto: plugin.GetCrypto(),
 	}
 }
 
@@ -37,7 +40,7 @@ func (i *UserSrv) Ping() error {
 	return nil
 }
 
-func (i *UserSrv) Login(req *vo2.LoginReq) (*vo2.LoginRes, error) {
+func (i *UserSrv) Login(req *vo.LoginReq) (*vo.LoginRes, error) {
 	var user system.User
 	if err := i.db.Where("username =?", req.Username).Find(&user).Error; err != nil {
 		return nil, errors.New("账号或密码错误")
@@ -47,7 +50,11 @@ func (i *UserSrv) Login(req *vo2.LoginReq) (*vo2.LoginRes, error) {
 		return nil, errors.New("账号或密码错误")
 	}
 
-	if user.Password == nil || req.Password != *user.Password {
+	if user.Password == nil {
+		return nil, errors.New("系统出错,请检查后台管理员账户")
+	}
+
+	if !i.crypto.VerifyPassword(req.Password, *user.Password) {
 		return nil, errors.New("密码错误")
 	}
 
@@ -61,7 +68,7 @@ func (i *UserSrv) Login(req *vo2.LoginReq) (*vo2.LoginRes, error) {
 	now := time.Now()
 	expTime, _ := jwt.GetAccessExpTime(now)
 
-	claims := &vo2.UserInfoJwtClaims{
+	claims := &vo.UserInfoJwtClaims{
 		Id:             *user.Id,
 		Username:       *user.Username,
 		RoleCode:       *role.Code,
@@ -74,15 +81,15 @@ func (i *UserSrv) Login(req *vo2.LoginReq) (*vo2.LoginRes, error) {
 		return nil, errors.New("系统错误")
 	}
 
-	return &vo2.LoginRes{
-		RealName:    "管理员",
-		Roles:       roles,
-		Username:    *user.Username,
+	return &vo.LoginRes{
+		//RealName:    "管理员",
+		//Roles:       roles,
+		//Username:    *user.Username,
 		AccessToken: accessToken,
 	}, nil
 }
 
-func (i *UserSrv) Info(id uint) (*vo2.InfoRes, error) {
+func (i *UserSrv) Info(id uint) (*vo.InfoRes, error) {
 	var user system.User
 	i.db.Where("id=?", id).Find(&user)
 	if user.Username == nil || *user.Username == "" {
@@ -90,11 +97,11 @@ func (i *UserSrv) Info(id uint) (*vo2.InfoRes, error) {
 	}
 	var role system.Role
 	i.db.Where("id=?", user.RoleId).Find(&role)
-	return &vo2.InfoRes{
+	return &vo.InfoRes{
 		Id:       id,
-		RealName: *user.Username,
-		Roles:    []string{*role.Code},
+		Avatar:   *user.Avatar,
 		Username: *user.Username,
+		Nickname: *user.Nickname,
 	}, nil
 }
 
@@ -122,7 +129,7 @@ func (i *UserSrv) Get(id any) system.User {
 	return user
 }
 
-func (i *UserSrv) List(page, limit int) *vo2.List {
+func (i *UserSrv) List(page, limit int) *vo.List {
 	var items []system.User
 	var total int64
 	if limit == 0 {
@@ -131,7 +138,7 @@ func (i *UserSrv) List(page, limit int) *vo2.List {
 	db := i.db
 	i.db.Limit(limit).Offset((page - 1) * limit).Find(&items)
 	db.Model(&system.User{}).Count(&total)
-	return &vo2.List{
+	return &vo.List{
 		Items: items,
 		Total: total,
 	}
@@ -142,4 +149,24 @@ func (i *UserSrv) GetStatus() map[string]interface{} {
 		"0": "禁用",
 		"1": "启用",
 	}
+}
+
+func (i *UserSrv) EditPassword(req vo.EditPasswordReq, userId any) error {
+	var user system.User
+	i.db.Where("id=?", userId).Find(&user)
+	if user.Password == nil || *user.Password == "" {
+		return errors.New("用户信息错误")
+	}
+	if !i.crypto.VerifyPassword(req.OldPassword, *user.Password) {
+		return errors.New("旧密码错误")
+	}
+
+	password, err := i.crypto.EncryptPassword(req.NewPassword)
+	if err != nil {
+		return err
+	}
+
+	*user.Password = password
+
+	return i.db.Save(&user).Error
 }
