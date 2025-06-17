@@ -10,3 +10,5 @@ config.toml
 /tests/upload/
 /tests/
 /module/system/test_helper.go
+docs/swagger.json
+docs/swagger.yaml

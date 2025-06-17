@@ -22,3 +22,12 @@ level = "info"
 maxAge = 0
 maxSize = 1024
 stacktraceLevel = "fatal"
+
+[redis]
+host = "127.0.0.1"
+port = 6379
+password = ""
+db = 0
+
+[sentry]
+dsn = "" # Add your Sentry DSN here

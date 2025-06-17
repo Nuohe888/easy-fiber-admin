@@ -17,6 +17,9 @@ EasyFiberAdmin 是一个基于 Go 语言开发的后端管理系统框架，使�
 - **权限管理**: Casbin (灵活的权限控制框架)
 - **日志**: Zap (高性能日志库)
 - **配置管理**: TOML (简洁的配置文件格式)
+- **缓存**: Redis (高性能键值数据库)
+- **API文档**: Swagger (via swaggo, API自动文档生成)
+- **错误报告**: Sentry (实时错误追踪与报告)
 
 ## 项目结构
 
@@ -71,6 +74,15 @@ pass = "password"
 host = "127.0.0.1"
 dbName = "easy-fiber-admin"
 port = 3306
+
+[redis]
+host = "127.0.0.1"
+port = 6379
+password = ""
+db = 0
+
+[sentry]
+dsn = "YOUR_SENTRY_DSN_HERE" # 请替换为您的Sentry DSN
 ```
 
 ### 运行
@@ -84,6 +96,40 @@ go run main.go
 ```
 
 服务默认在`http://localhost:18888`启动。
+
+## API 文档
+
+项目使用 Swagger (通过 swaggo 工具) 自动生成 API 文档。
+
+- **访问文档**: 服务启动后，可以通过浏览器访问 `http://localhost:18888/swagger/index.html` 来查看和测试 API。
+- **更新文档**: 如果您修改了 API 的代码注释（例如：控制器方法、路由或数据模型），需要重新生成 Swagger 文档。在项目根目录下运行以下命令：
+  ```bash
+  go run github.com/swaggo/swag/cmd/swag init --parseDependency --parseInternal --parseDepth 2
+  ```
+  这会更新 `docs/` 目录下的文档文件。`docs/docs.go` 文件应被提交到版本控制中。
+
+## 缓存
+
+为了提升性能和减少数据库负载，项目集成了 Redis 进行数据缓存。
+
+- **用途**: 缓存常用的查询结果或计算数据。
+- **配置**: Redis 的连接信息在 `config.toml` 文件中的 `[redis]` 部分进行配置。
+
+## 错误报告
+
+项目集成了 Sentry 用于实时的错误追踪和报告。
+
+- **用途**: 自动捕获应用运行时发生的错误，并将其发送到 Sentry 平台，帮助开发人员快速定位和解决问题。
+- **配置**: Sentry DSN 在 `config.toml` 文件中的 `[sentry]` 部分进行配置。如果 DSN 为空，Sentry 将不会初始化。
+- **手动上报**: 除了自动捕获未处理的 panic，您也可以在代码中手动上报特定的错误到 Sentry，例如：
+  ```go
+  import "github.com/getsentry/sentry-go"
+  // ...
+  if err != nil {
+      sentry.CaptureException(fmt.Errorf("这是一个特定的错误: %w", err))
+      // ... 正常处理错误
+  }
+  ```
 
 ## 扩展开发
 

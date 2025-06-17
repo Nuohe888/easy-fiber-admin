@@ -8,6 +8,13 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	recover2 "github.com/gofiber/fiber/v2/middleware/recover"
 	"os"
+
+	"github.com/swaggo/fiber-swagger"
+	// swagger "github.com/swaggo/fiber-swagger" // fiber-swagger middleware
+	_ "easy-fiber-admin/docs" // Necessary for swag init to link generated docs
+
+	"github.com/getsentry/sentry-go"
+	sentryfiber "github.com/getsentry/sentry-go/fiber"
 )
 
 func newFiber() *fiber.App {
@@ -16,6 +23,16 @@ func newFiber() *fiber.App {
 		JSONDecoder:       gojson.Unmarshal,
 		JSONEncoder:       gojson.Marshal,
 	})
+
+	// Add Sentry middleware
+	// Make sure to initialize Sentry before this!
+	if sentry.CurrentHub().Client() != nil { // Check if Sentry was initialized
+		app.Use(sentryfiber.New(sentryfiber.Options{
+			Repanic:         true, // Repanic so Fiber's default error handler can also catch it
+			WaitForDelivery: false, // False for not blocking response, true if critical
+		}))
+	}
+
 	app.Use(recover2.New(recover2.Config{
 		EnableStackTrace:  true,
 		StackTraceHandler: recover2.ConfigDefault.StackTraceHandler,
@@ -28,6 +45,10 @@ func newFiber() *fiber.App {
 		Output:        os.Stdout,
 		DisableColors: true,
 	}))
+
+	// Swagger endpoint
+	app.Get("/swagger/*", fiberSwagger.WrapHandler)
+
 	app.Static("/upload", "./upload")
 	return app
 }

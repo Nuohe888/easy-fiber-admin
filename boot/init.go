@@ -3,12 +3,41 @@ package boot
 import (
 	"easy-fiber-admin/pkg"
 	"easy-fiber-admin/pkg/config"
+	"easy-fiber-admin/pkg/redis"
 	"easy-fiber-admin/plugin"
+	"github.com/getsentry/sentry-go"
+	"log"
+	"time"
 )
+
+func InitSentry(cfg *config.Config) {
+	if cfg.Sentry.Dsn == "" {
+		log.Println("Sentry DSN not configured, skipping Sentry initialization.")
+		return
+	}
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn:              cfg.Sentry.Dsn,
+		TracesSampleRate: 1.0, // Adjust as needed
+		EnableTracing:    true, // Optional: if you want performance monitoring
+		// AttachStacktrace: true, // Already default
+	})
+	if err != nil {
+		log.Fatalf("Sentry initialization failed: %v", err)
+	}
+	log.Println("Sentry initialized successfully.")
+}
 
 func initBoot() {
 	//包初始化
 	pkg.Init()
+
+	// Initialize Sentry
+	InitSentry(config.Get())
+
+	// Initialize Redis
+	if _, err := redis.InitRedis(config.Get().Redis); err != nil {
+		log.Fatalf("failed to initialize Redis: %v", err)
+	}
 
 	//插件初始化
 	plugin.Init()

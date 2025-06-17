@@ -8,9 +8,15 @@ import (
 	"easy-fiber-admin/pkg/logger"
 	"easy-fiber-admin/pkg/sql"
 	"easy-fiber-admin/plugin"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"github.com/getsentry/sentry-go"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 	"time"
+
+	redisClient "easy-fiber-admin/pkg/redis"
 )
 
 type UserSrv struct {
@@ -78,6 +84,7 @@ func (i *UserSrv) Login(req *vo.LoginReq) (*vo.LoginRes, error) {
 
 	accessToken, err := jwt.GenToken(claims)
 	if err != nil {
+		sentry.CaptureException(fmt.Errorf("failed to generate token for user %s: %w", req.Username, err))
 		return nil, errors.New("系统错误")
 	}
 
@@ -125,7 +132,43 @@ func (i *UserSrv) Put(id any, user *system.User) error {
 
 func (i *UserSrv) Get(id any) system.User {
 	var user system.User
-	i.db.Where("id = ?", id).Find(&user)
+	cacheKey := fmt.Sprintf("user:%v", id)
+
+	// Try to get from Redis
+	cachedUser, err := redisClient.Get(cacheKey)
+	if err != nil && err != redis.Nil {
+		i.log.Errorf("failed to get user from redis: %v", err)
+		// Proceed to fetch from DB if Redis error occurs
+	}
+
+	if cachedUser != "" {
+		err := json.Unmarshal([]byte(cachedUser), &user)
+		if err == nil {
+			i.log.Infof("user %v found in cache", id)
+			return user
+		}
+		i.log.Errorf("failed to unmarshal cached user data: %v", err)
+		// Proceed to fetch from DB if unmarshal error
+	}
+
+	// If not in Redis or error, get from DB
+	i.log.Infof("user %v not found in cache, fetching from DB", id)
+	if errDb := i.db.Where("id = ?", id).Find(&user).Error; errDb != nil {
+		i.log.Errorf("failed to get user from db: %v", errDb)
+		return system.User{} // Return empty user on DB error
+	}
+
+	// Store in Redis
+	userJSON, err := json.Marshal(user)
+	if err != nil {
+		i.log.Errorf("failed to marshal user data for caching: %v", err)
+	} else {
+		err = redisClient.Set(cacheKey, userJSON, 10*time.Minute)
+		if err != nil {
+			i.log.Errorf("failed to set user in redis: %v", err)
+		}
+	}
+
 	return user
 }
 
