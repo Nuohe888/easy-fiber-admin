@@ -10,3 +10,4 @@ config.toml
 /tests/upload/
 /tests/
 /module/system/test_helper.go
+.idea
