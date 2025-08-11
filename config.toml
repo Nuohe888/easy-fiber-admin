@@ -2,13 +2,14 @@
 port = 18888
 domain = "http://127.0.0.1:18888"
 storage = "local"
+env = 0
 
 [sql]
 user = "go_admin"
-pass = "123123"
+pass = "go_admin"
 host = "127.0.0.1"
 dbName = "go_admin"
-port = 13306
+port = 3306
 maxIdleConns = 10
 maxOpenConns = 100
 

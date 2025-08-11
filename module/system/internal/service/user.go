@@ -4,11 +4,13 @@ import (
 	"easy-fiber-admin/model/system"
 	"easy-fiber-admin/pkg/common/utils"
 	"easy-fiber-admin/pkg/common/vo"
+	"easy-fiber-admin/pkg/config"
 	"easy-fiber-admin/pkg/jwt"
 	"easy-fiber-admin/pkg/logger"
 	"easy-fiber-admin/pkg/sql"
 	"easy-fiber-admin/plugin"
 	"errors"
+	"fmt"
 	"gorm.io/gorm"
 	"time"
 )
@@ -82,9 +84,6 @@ func (i *UserSrv) Login(req *vo.LoginReq) (*vo.LoginRes, error) {
 	}
 
 	return &vo.LoginRes{
-		//RealName:    "管理员",
-		//Roles:       roles,
-		//Username:    *user.Username,
 		AccessToken: accessToken,
 	}, nil
 }
@@ -97,11 +96,26 @@ func (i *UserSrv) Info(id uint) (*vo.InfoRes, error) {
 	}
 	var role system.Role
 	i.db.Where("id=?", user.RoleId).Find(&role)
+
+	var _rolesArr []string
+	var _buttonsArr []string
+
+	if config.Get().Server.Env == 0 {
+		_rolesArr = append(_rolesArr, "R_SUPER")
+		_buttonsArr = append(_buttonsArr, "B_CODE1")
+		_buttonsArr = append(_buttonsArr, "B_CODE2")
+		_buttonsArr = append(_buttonsArr, "B_CODE3")
+	} else {
+		//根据业务填写 也可以是"" 不允许string返回nil
+		_rolesArr = append(_rolesArr, "")
+		_buttonsArr = append(_buttonsArr, "")
+	}
+
 	return &vo.InfoRes{
-		Id:       id,
-		Avatar:   *user.Avatar,
-		Username: *user.Username,
-		Nickname: *user.Nickname,
+		UserId:   fmt.Sprintf("%d", user.Id),
+		UserName: *user.Username,
+		Roles:    _rolesArr,
+		Buttons:  _buttonsArr,
 	}, nil
 }
 

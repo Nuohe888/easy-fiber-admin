@@ -7,13 +7,13 @@ import (
 type Response struct {
 	Code    int    `json:"code"`
 	Data    any    `json:"data"`
-	Message string `json:"message"`
+	Message string `json:"msg"`
 	Err     error  `json:"-"`
 }
 
 const (
 	ERROR   = 400
-	SUCCESS = 0
+	SUCCESS = 200
 )
 
 func ResultErr(err error, c *fiber.Ctx) error {
