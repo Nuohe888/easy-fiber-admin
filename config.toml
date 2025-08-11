@@ -23,3 +23,17 @@ level = "info"
 maxAge = 0
 maxSize = 1024
 stacktraceLevel = "fatal"
+
+[redis]
+host = "localhost"
+port = 6379
+password = ""
+db = 0
+poolSize = 10
+
+[sqlite]
+path = "./data/sqlite.db"
+maxIdleConns = 10
+maxOpenConns = 100
+enableWAL = true
+busyTimeout = 5000
